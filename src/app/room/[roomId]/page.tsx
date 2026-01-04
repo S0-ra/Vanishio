@@ -22,7 +22,7 @@ const Page = () => {
   const { username } = useUsername();
 
   const [input, setInput] = useState("");
-  const [copyStatus, setCopyStatus] = useState("COPY");
+  const [copyStatus, setCopyStatus] = useState("COPY LINK");
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -111,7 +111,7 @@ const Page = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url);
     setCopyStatus("COPIED!");
-    setTimeout(() => setCopyStatus("COPY"), 2000);
+    setTimeout(() => setCopyStatus("COPY LINK"), 2000);
   };
 
   return (
@@ -133,7 +133,7 @@ const Page = () => {
           <div className="h-8 w-px bg-zinc-800" />
           <div className="flex flex-col">
             <span className="text-xs text-zinc-500 uppercase">
-              Self-destruct
+              Self-dissapear
             </span>
             <span
               className={`text-sm font-bold items-center gap-2 ${
@@ -150,8 +150,7 @@ const Page = () => {
         <button
           onClick={() => destroyRoom()}
           className="group text-xs bg-zinc-800 hover:bg-red-600 px-3 py-1.5 rounded text-zinc-400 hover:text-white font-bold transition-all flex items-center cursor-pointer">
-          <span className="group-hover:animate-pulse">💣</span>
-          DESTROY NOW
+          🪄 AVADA KEDAVRA
         </button>
       </header>
 
