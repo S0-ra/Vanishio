@@ -60,6 +60,21 @@ const messages = new Elysia({ prefix: "/messages" })
         throw new Error("Room doesn't exist");
       }
 
+      // Check for the killing curse
+      if (text.toLowerCase().trim() === "avada kedavra") {
+        await realtime
+          .channel(roomId)
+          .emit("chat.destroy", { isDestroyed: true });
+
+        await Promise.all([
+          redis.del(`meta:${roomId}`),
+          redis.del(roomId),
+          redis.del(`messages:${roomId}`),
+        ]);
+
+        return { destroyed: true, spell: true };
+      }
+
       const message: Message = {
         id: nanoid(),
         sender,
