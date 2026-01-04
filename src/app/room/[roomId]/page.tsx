@@ -172,7 +172,7 @@ const Page = () => {
                   className={`text-xs font-bold ${
                     msg.sender === username ? "text-green-500" : "text-blue-500"
                   }`}>
-                  {msg.sender === username ? "YOU" : msg.sender}
+                  {msg.sender === username ? `${msg.sender} (YOU)` : msg.sender}
                 </span>
                 <span className="text-[10px] text-zinc-600">
                   {format(msg.timestamp, "hh:mm a")}
