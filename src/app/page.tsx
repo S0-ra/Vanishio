@@ -1,10 +1,9 @@
 "use client";
-
 import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { Typewriter } from "react-simple-typewriter";
 
 const Page = () => {
@@ -18,10 +17,11 @@ const Page = () => {
 function Lobby() {
   const router = useRouter();
   const { username } = useUsername();
-
   const searchParams = useSearchParams();
   const wasDestroyed = searchParams.get("destroyed") === "true";
   const error = searchParams.get("error");
+
+  const [roomId, setRoomId] = useState("");
 
   const { mutate: createRoom } = useMutation({
     mutationFn: async () => {
@@ -31,6 +31,12 @@ function Lobby() {
       }
     },
   });
+
+  const handleJoinRoom = () => {
+    if (roomId.trim()) {
+      router.push(`/room/${roomId.trim()}`);
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -59,9 +65,10 @@ function Lobby() {
             </p>
           </div>
         )}
+
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold tracking-tight text-green-500">
-            {">"}private_chat
+            {">"}Vanishio
           </h1>
           <p className="text-zinc-500 text-sm">
             <Typewriter
@@ -73,6 +80,7 @@ function Lobby() {
             />
           </p>
         </div>
+
         <div className="border border-zinc-800 bg-zinc-900/50 p-6 backdrop-blur-md">
           <div className="space-y-5">
             <div className="space-y-2">
@@ -88,13 +96,49 @@ function Lobby() {
 
             <button
               onClick={() => createRoom()}
-              className="w-full bg-zinc-100 text-black p-3 text-sm font-bold hover:bg-zinc-50 hover:text-black mt-2 cursor-pointer disabled:opacity-50">
+              className="w-full bg-zinc-100 text-black p-3 text-sm font-bold hover:bg-zinc-50 hover:text-black cursor-pointer disabled:opacity-50">
               Create secure room
             </button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-zinc-800"></div>
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-zinc-900/50 px-2 text-zinc-600">Or</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="flex items-center text-zinc-500 text-sm">
+                Join Existing Room
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={roomId}
+                  onChange={(e) => setRoomId(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && roomId.trim()) {
+                      handleJoinRoom();
+                    }
+                  }}
+                  placeholder="Enter Room ID..."
+                  className="flex-1 bg-zinc-950 border border-zinc-800 p-3 text-sm text-zinc-300 placeholder:text-zinc-700 focus:border-zinc-700 focus:outline-none"
+                />
+                <button
+                  onClick={handleJoinRoom}
+                  disabled={!roomId.trim()}
+                  className="bg-zinc-800 text-zinc-400 px-6 text-sm font-bold hover:bg-zinc-700 hover:text-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                  JOIN
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </main>
   );
 }
+
 export default Page;
